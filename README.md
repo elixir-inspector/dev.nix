@@ -1,0 +1,1 @@
+Elixir Inspector Nix-Shell
