@@ -1,4 +1,4 @@
-{ pkgs, stdenv, fetchFromGitHub, erlang, rebar, makeWrapper, coreutils, curl, bash }:
+{ pkgs, stdenv, fetchFromGitHub, erlangR20, rebar, makeWrapper, coreutils, curl, bash }:
 
 stdenv.mkDerivation rec {
   name = "elixir-${version}";
@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
     sha256 = "00kgqcn9g6vflc551wniz9pwv7pszyf8v6smpkqs50j3kbliihy5";
   };
 
-  buildInputs = [ erlang rebar makeWrapper ];
+  buildInputs = [ erlangR20 rebar makeWrapper ];
 
   LOCALE_ARCHIVE = stdenv.lib.optionalString stdenv.isLinux
     "${pkgs.glibcLocales}/lib/locale/locale-archive";
@@ -40,7 +40,7 @@ stdenv.mkDerivation rec {
      b=$(basename $f)
       if [ $b == "mix" ]; then continue; fi
       wrapProgram $f \
-        --prefix PATH ":" "${stdenv.lib.makeBinPath [ erlang coreutils curl bash ]}" \
+        --prefix PATH ":" "${stdenv.lib.makeBinPath [ erlangR20 coreutils curl bash ]}" \
         --set CURL_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
     done
 
