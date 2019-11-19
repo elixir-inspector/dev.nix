@@ -1,17 +1,17 @@
-{ pkgs, stdenv, fetchFromGitHub, erlangR20, rebar, makeWrapper, coreutils, curl, bash }:
+{ pkgs, stdenv, fetchFromGitHub, erlang, makeWrapper, coreutils, curl, bash }:
 
 stdenv.mkDerivation rec {
   name = "elixir-${version}";
-  version = "1.5.3";
+  version = "1.7.4";
 
   src = fetchFromGitHub {
     owner = "elixir-lang";
     repo = "elixir";
     rev = "v${version}";
-    sha256 = "00kgqcn9g6vflc551wniz9pwv7pszyf8v6smpkqs50j3kbliihy5";
+    sha256 = "0f8j4pib13kffiihagdwl3xqs3a1ak19qz3z8fpyfxn9dnjiinla";
   };
 
-  buildInputs = [ erlangR20 rebar makeWrapper ];
+  buildInputs = [ erlang makeWrapper ];
 
   LOCALE_ARCHIVE = stdenv.lib.optionalString stdenv.isLinux
     "${pkgs.glibcLocales}/lib/locale/locale-archive";
@@ -24,9 +24,7 @@ stdenv.mkDerivation rec {
   buildFlags = "ERL_COMPILER_OPTIONS=debug_info";
 
   preBuild = ''
-    # The build process uses ./rebar. Link it to the nixpkgs rebar
-    rm -v rebar
-    ln -s ${rebar}/bin/rebar rebar
+    patchShebangs lib/elixir/generate_app.escript || true
 
     substituteInPlace Makefile \
       --replace "/usr/local" $out
@@ -40,7 +38,7 @@ stdenv.mkDerivation rec {
      b=$(basename $f)
       if [ $b == "mix" ]; then continue; fi
       wrapProgram $f \
-        --prefix PATH ":" "${stdenv.lib.makeBinPath [ erlangR20 coreutils curl bash ]}" \
+        --prefix PATH ":" "${stdenv.lib.makeBinPath [ erlang coreutils curl bash ]}" \
         --set CURL_CA_BUNDLE /etc/ssl/certs/ca-certificates.crt
     done
 

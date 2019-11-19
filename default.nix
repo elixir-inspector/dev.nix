@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
 
   buildInputs = [
     elixir
-    erlangR20
+    erlang
     nodejs
 
     inotify-tools
